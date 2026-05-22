@@ -1,4 +1,4 @@
-ARG ONEAPI_VERSION=2025.3.2-0-devel-ubuntu24.04
+ARG ONEAPI_VERSION=2026.0.0-devel-ubuntu24.04
 
 FROM docker.io/intel/deep-learning-essentials:$ONEAPI_VERSION
 
