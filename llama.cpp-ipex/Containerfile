@@ -1,4 +1,4 @@
-ARG ONEAPI_VERSION=2026.0.0-devel-ubuntu24.04
+ARG ONEAPI_VERSION=2025.3.3-0-devel-ubuntu24.04
 
 FROM docker.io/intel/deep-learning-essentials:$ONEAPI_VERSION
 
@@ -11,11 +11,18 @@ RUN ln -sT /usr/bin/python3.11 /usr/bin/python \
   && python3.11 get-pip.py
 
 WORKDIR /llama.cpp/
-RUN pip install --pre ipex-llm[cpp] \
+RUN pip install --index-url https://download.pytorch.org/whl/cpu torch==2.2.0 \
+  && pip install --pre ipex-llm[cpp] \
   && init-llama-cpp 
 
 ARG ONEAPI_DEVICE_SELECTOR=level_zero:0
 RUN echo "#!/bin/bash\nexport SYCL_CACHE_PERSISTENT=1\nexport ZES_ENABLE_SYSMAN=1\nexport SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1\nexport ONEAPI_DEVICE_SELELECTOR=$ONEAPI_DEVICE_SELECTOR\n/llama.cpp/\$@" > /llama.cpp/oneapi-setup.sh \
   && chmod +x /llama.cpp/oneapi-setup.sh
+
+RUN apt autoremove --yes \
+    && apt clean --yes \
+    && rm --recursive --force /tmp/* /var/tmp/* \
+    && find /var/cache/apt/archives /var/lib/apt/lists -not -name lock -type f -delete \
+    && find /var/cache -type f -delete
 
 ENTRYPOINT ["/llama.cpp/oneapi-setup.sh"]
