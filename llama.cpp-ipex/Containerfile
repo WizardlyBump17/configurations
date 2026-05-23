@@ -15,9 +15,7 @@ RUN pip install --index-url https://download.pytorch.org/whl/cpu torch==2.2.0 \
   && pip install --pre ipex-llm[cpp] \
   && init-llama-cpp 
 
-ARG ONEAPI_DEVICE_SELECTOR=level_zero:0
-RUN echo "#!/bin/bash\nexport SYCL_CACHE_PERSISTENT=1\nexport ZES_ENABLE_SYSMAN=1\nexport SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1\nexport ONEAPI_DEVICE_SELELECTOR=$ONEAPI_DEVICE_SELECTOR\n/llama.cpp/\$@" > /llama.cpp/oneapi-setup.sh \
-  && chmod +x /llama.cpp/oneapi-setup.sh
+COPY tools.sh .
 
 RUN apt autoremove --yes \
     && apt clean --yes \
@@ -25,4 +23,4 @@ RUN apt autoremove --yes \
     && find /var/cache/apt/archives /var/lib/apt/lists -not -name lock -type f -delete \
     && find /var/cache -type f -delete
 
-ENTRYPOINT ["/llama.cpp/oneapi-setup.sh"]
+ENTRYPOINT ["/llama.cpp/tools.sh"]
