@@ -1,0 +1,20 @@
+[model.chat.http]
+kind = "openai/chat"
+model_name = "Qwen3.5 35B A3B"
+api_endpoint = "http://host.docker.internal:1235/v1"
+
+[model.completion.http]
+kind = "llama.cpp/completion"
+api_endpoint = "http://host.docker.internal:8084"
+prompt_template = "<|fim_prefix|>{prefix}<|fim_suffix|>{suffix}<|fim_middle|>"
+
+[model.embedding.http]
+kind = "llama.cpp/embedding"
+api_endpoint = "http://host.docker.internal:8083"
+
+[completion]
+max_input_length = 8192
+max_decoding_length = 8192
+
+[server]
+completion_timeout = 300

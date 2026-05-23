@@ -1,0 +1,16 @@
+services:
+  tabby:
+    image: "registry.tabbyml.com/tabbyml/tabby"
+    command: "serve"
+    ports:
+      - "8080:8080"
+    volumes:
+      - "tabby:/data"
+      - "./server-config.toml:/data/config.toml"
+    environment:
+      RUST_BACKTRACE: "full"
+      TABBY_DISABLE_USAGE_COLLECTION: 1
+
+volumes:
+  tabby:
+
