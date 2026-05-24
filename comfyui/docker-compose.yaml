@@ -1,0 +1,13 @@
+services:
+  comfyui:
+    image: "localhost/comfyui"
+    command: "--listen 0.0.0.0 --port 8188 --lowvram"
+    ports:
+      - "8188:8188"
+    volumes:
+      - "./data/models/:/ComfyUI/models/"
+      - "./data/output/:/ComfyUI/output/"
+      - "./data/input/:/ComfyUI/input/"
+    devices:
+      - "/dev/dri/renderD128"
+

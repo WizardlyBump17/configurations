@@ -1,0 +1,30 @@
+ARG ONEAPI_VERSION=2025.3.2-0-devel-ubuntu24.04
+FROM docker.io/intel/deep-learning-essentials:$ONEAPI_VERSION
+
+RUN apt update \
+  && add-apt-repository --yes ppa:deadsnakes/ppa \
+  && apt install --yes python3.11 \
+  && ln --symbolic --no-target-directory /usr/bin/python3.11 /usr/bin/python \
+  && cd /tmp/ \
+  && wget https://bootstrap.pypa.io/get-pip.py \
+  && python get-pip.py
+
+ARG COMFYUI_COMMIT=master
+RUN git clone https://github.com/comfyanonymous/ComfyUI \
+  && cd /ComfyUI/ && git checkout $COMFYUI_COMMIT
+WORKDIR ComfyUI
+
+RUN pip install --pre torch torchvision torchaudio --index-url=https://download.pytorch.org/whl/nightly/xpu \
+  && pip install --requirement requirements.txt
+
+RUN cd /ComfyUI/custom_nodes/ \
+  && git clone https://github.com/pamparamm/sd-perturbed-attention \
+  && git clone https://github.com/city96/ComfyUI-GGUF && pip install --requirement ComfyUI-GGUF/requirements.txt \
+  && apt install --yes libxcb1 libgl1 && git clone https://github.com/Fannovel16/comfyui_controlnet_aux && pip install --requirement comfyui_controlnet_aux/requirements.txt
+
+RUN rm --recursive --force /tmp/* /var/tmp/* \
+  && find /var/cache/apt/archives /var/lib/apt/lists -not -name lock -type f -delete \
+  && find /var/cache -type f -delete
+
+ENTRYPOINT ["python", "/ComfyUI/main.py"]
+
