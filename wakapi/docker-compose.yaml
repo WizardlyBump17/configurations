@@ -1,0 +1,12 @@
+services:
+  wakapi:
+    image: "ghcr.io/muety/wakapi:latest"
+    ports:
+      - "3000:3000"
+    environment:
+      WAKAPI_PASSWORD_SALT: "q8XxjS5uzfC51fntiquthBYBpT0raTUg"
+    volumes:
+      - "wakapi-data:/data"
+
+volumes:
+  wakapi-data:
