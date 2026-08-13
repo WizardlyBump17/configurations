@@ -3,7 +3,7 @@ FROM docker.io/intel/deep-learning-essentials:$ONEAPI_VERSION
 
 RUN apt update \
   && add-apt-repository --yes ppa:deadsnakes/ppa \
-  && apt install --yes python3.11 \
+  && apt install --yes python3.11 python3.11-dev \
   && ln --symbolic --no-target-directory /usr/bin/python3.11 /usr/bin/python \
   && cd /tmp/ \
   && wget https://bootstrap.pypa.io/get-pip.py \
@@ -15,7 +15,8 @@ RUN git clone https://github.com/comfyanonymous/ComfyUI \
 WORKDIR ComfyUI
 
 RUN pip install --pre torch torchvision torchaudio --index-url=https://download.pytorch.org/whl/nightly/xpu \
-  && pip install --requirement requirements.txt
+  && pip install --requirement requirements.txt \
+  && pip install --requirement manager_requirements.txt
 
 RUN cd /ComfyUI/custom_nodes/ \
   && git clone https://github.com/pamparamm/sd-perturbed-attention \
