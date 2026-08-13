@@ -1,0 +1,2 @@
+[llama-cpp]
+base_url = "http://host.docker.internal:1235"
