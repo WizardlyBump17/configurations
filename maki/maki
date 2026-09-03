@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# This script will copy the current directory (pwd) and start the maki container with the copied directory as a volume.
+# When the container stops, this script will ask if you want to copy the temporary directory back to the current directory. 
+
+CONFIG_DIRECTORY=${1:-"/home/davi/docker/maki/config/"}
+CODE_DIRECTORY=${2:-$(pwd)}
+TEMP_CODE_DIRECTORY=${3:-$(mktemp --directory --tmpdir "maki-XXX")}
+IMAGE=${4:-"localhost/maki:latest"}
+
+echo -e "Configurations from: $CONFIG_DIRECTORY;\nCode from: $CODE_DIRECTORY;\nTemporary copy of the code: $TEMP_CODE_DIRECTORY;\nImage: $IMAGE"
+
+echo "Copying $CODE_DIRECTORY to $TEMP_CODE_DIRECTORY"
+rsync --archive "$CODE_DIRECTORY/" "$TEMP_CODE_DIRECTORY/"
+echo "Copied"
+
+podman run --interactive --tty --volume="$TEMP_CODE_DIRECTORY:/code/" --volume="$CONFIG_DIRECTORY/providers.toml:/root/.config/maki/providers.toml" --volume="$CONFIG_DIRECTORY/model:/root/.local/state/maki/model" "$IMAGE" --yolo
+
+read -p "Shall we copy the temporary directory back to the original one? Type: \"--yes-please\" " yes_please
+
+if [[ $yes_please == "--yes-please" ]]; then
+    echo "Copying $TEMP_CODE_DIRECTORY to $CODE_DIRECTORY"
+    rsync --archive "$TEMP_CODE_DIRECTORY/" "$CODE_DIRECTORY/"
+    echo "Copied"
+fi
+
+echo "Removing $TEMP_CODE_DIRECTORY"
+rm --recursive --force "$TEMP_CODE_DIRECTORY"
+echo "Removed"
