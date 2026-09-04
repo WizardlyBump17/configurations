@@ -25,7 +25,7 @@ services:
       --cache-type-k q8_0 --cache-type-v q8_0
       --log-verbosity 4
     volumes:
-      - "/home/davi/AI/models/Qwen3.6-35B-A3B-UD-Q5_K_XL.gguf.ignore:/models/model.gguf"
+      - "/home/davi/AI/models/Qwen3.6-35B-A3B-UD-Q5_K_XL.gguf:/models/model.gguf"
     ports:
       - "1235:8080"
     devices:
