@@ -7,6 +7,7 @@ services:
       WAKAPI_PASSWORD_SALT: "q8XxjS5uzfC51fntiquthBYBpT0raTUg"
     volumes:
       - "wakapi-data:/data"
+    network_mode: "pasta"
 
 volumes:
   wakapi-data:

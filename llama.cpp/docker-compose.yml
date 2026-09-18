@@ -30,3 +30,4 @@ services:
       - "1235:8080"
     devices:
       - "/dev/dri/renderD128"
+    network_mode: "pasta"
