@@ -10,4 +10,4 @@ services:
       - "./data/input/:/ComfyUI/input/"
     devices:
       - "/dev/dri/renderD128"
-    network_mode: "pasta"
+

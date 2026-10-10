@@ -6,7 +6,6 @@ services:
       - "searxng:/var/cache/searxng/"
     ports:
       - "8082:8080"
-    network_mode: "pasta"
-
+    
 volumes:
   searxng:
